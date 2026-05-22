@@ -1,13 +1,15 @@
 import HeaderComponent from "./components/Header";
+import HomeComponent from "./components/Home";
 import SidebarComponent from "./components/Sidebar";
 
 export default function App() {
   return (
-    <div className="flex flex-col w-full min-h-screen">
+    <div className="flex flex-col w-full h-screen">
       <HeaderComponent></HeaderComponent>
-      <div className="flex grow">
+      <main className="flex grow">
         <SidebarComponent></SidebarComponent>
-      </div>
+        <HomeComponent></HomeComponent>
+      </main>
     </div>
   )
 }

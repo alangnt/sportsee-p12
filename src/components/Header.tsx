@@ -16,7 +16,7 @@ export default function HeaderComponent() {
       <nav className="grow">
         <ul className="flex items-center text-xl">
           {tabs.map(tab => (
-            <li key={tab.value} className="w-full py-4 px-2 cursor-pointer">{tab.name}</li>
+            <li key={tab.value} className="w-full py-4 px-2 cursor-pointer text-center">{tab.name}</li>
           ))}
         </ul>
       </nav>
