@@ -98,7 +98,7 @@ export default function HomeComponent({
         </div>
 
         <div className="flex-1 min-h-0 grid grid-cols-4 grid-rows-2 gap-4">
-          <div className="col-span-3 row-span-1 rounded-md bg-[#fbfbfb] p-6 flex flex-col">
+          <section className="col-span-3 row-span-1 rounded-md bg-[#fbfbfb] p-6 flex flex-col">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-bold text-[15px]">Activité quotidienne</h2>
               <ActivityLegend />
@@ -133,9 +133,9 @@ export default function HomeComponent({
               <Bar yAxisId="kg" dataKey="kg" fill="#282D30" radius={[3, 3, 0, 0]} />
               <Bar yAxisId="kcal" dataKey="kcal" fill="#E60000" radius={[3, 3, 0, 0]} />
             </BarChart>
-          </div>
+          </section>
 
-          <div className="col-span-1 row-span-2 flex flex-col gap-4 h-full">
+          <section className="col-span-1 row-span-2 flex flex-col gap-4 h-full">
             {stats.map(({ icon, value, label, bg }) => (
               <div key={label} className="flex items-center gap-4 bg-[#fbfbfb] rounded-md p-6 h-full">
                 <div className="rounded-lg w-14 h-14 flex items-center justify-center shrink-0" style={{ background: bg }}>
@@ -147,9 +147,9 @@ export default function HomeComponent({
                 </div>
               </div>
             ))}
-          </div>
+          </section>
 
-          <div className="col-span-3 grid grid-cols-3 row-span-1 gap-4">
+          <section className="col-span-3 grid grid-cols-3 row-span-1 gap-4">
             <div className="bg-[#E60000] col-span-1 rounded-md relative overflow-hidden">
               <p className="absolute top-6 left-6 text-white/60 font-medium text-sm leading-snug z-10">
                 Durée moyenne des<br />sessions
@@ -225,7 +225,7 @@ export default function HomeComponent({
                 <p className="text-sm text-[#74798C] text-center leading-tight">de votre<br />objectif</p>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>
