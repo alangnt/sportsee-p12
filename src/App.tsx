@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div className="flex flex-col w-full h-screen">
       <HeaderComponent></HeaderComponent>
-      <main className="flex grow">
+      <main className="flex grow min-h-0 overflow-hidden">
         <SidebarComponent></SidebarComponent>
         <HomeComponent></HomeComponent>
       </main>
