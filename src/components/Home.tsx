@@ -1,43 +1,25 @@
-import { Bar, BarChart, CartesianGrid, Line, LineChart, Pie, PieChart, PolarAngleAxis, PolarGrid, Radar, RadarChart, Tooltip, type TooltipContentProps, type TooltipIndex, XAxis, YAxis } from "recharts";
-
-const stats = [
-  { icon: '/icons/energy.svg', value: '1,930kCal', label: 'Calories', bg: '#FBEAEA' },
-  { icon: '/icons/chicken.svg', value: '155g', label: 'Proteines', bg: '#E8F0FF' },
-  { icon: '/icons/apple.svg', value: '290g', label: 'Glucides', bg: '#FFF3CC' },
-  { icon: '/icons/cheeseburger.svg', value: '50g', label: 'Lipides', bg: '#FFE8EA' },
-] as const;
-
-const dataActivity = [
-  { name: '1', kg: 68, kcal: 356 },
-  { name: '2', kg: 69, kcal: 349 },
-  { name: '3', kg: 68, kcal: 310 },
-  { name: '4', kg: 69, kcal: 800 },
-  { name: '5', kg: 67, kcal: 100 },
-  { name: '6', kg: 67, kcal: 320 },
-  { name: '7', kg: 68, kcal: 329 },
-  { name: '8', kg: 67, kcal: 510 },
-  { name: '9', kg: 66, kcal: 1100 },
-  { name: '10', kg: 68, kcal: 342 },
-];
-
-const dataSessions = [
-  { name: 'L', value: 400 },
-  { name: 'M', value: 300 },
-  { name: 'M', value: 320 },
-  { name: 'J', value: 200 },
-  { name: 'V', value: 278 },
-  { name: 'S', value: 189 },
-  { name: 'D', value: 189 },
-];
-
-const dataPerformance = [
-  { subject: 'Intensité', value: 80 },
-  { subject: 'Vitesse', value: 90 },
-  { subject: 'Force', value: 70 },
-  { subject: 'Endurance', value: 85 },
-  { subject: 'Energie', value: 60 },
-  { subject: 'Cardio', value: 75 },
-];
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  Radar,
+  RadarChart,
+  Tooltip,
+  type TooltipContentProps,
+  type TooltipIndex,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { getUserData } from '../services/api';
+import type { UserData } from '../types';
 
 const SessionCursor = ({ points, height }: any) => {
   if (!points?.length) return null;
@@ -53,7 +35,7 @@ const SessionTooltip = ({ active, payload }: TooltipContentProps) => {
   );
 };
 
-const CustomTooltip = ({ active, payload }: TooltipContentProps) => {
+const ActivityTooltip = ({ active, payload }: TooltipContentProps) => {
   const kg = payload?.[0];
   const kcal = payload?.[1];
   const isVisible = active && kg != null && kcal != null;
@@ -87,12 +69,53 @@ export default function HomeComponent({
   isAnimationActive?: boolean;
   defaultIndex?: TooltipIndex;
 }) {
+  const { userId } = useParams<{ userId: string }>();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    setLoading(true);
+    setError(null);
+    getUserData(Number(userId))
+      .then(setUserData)
+      .catch(() => setError('Impossible de charger les données utilisateur.'))
+      .finally(() => setLoading(false));
+  }, [userId]);
+
+  if (loading) {
+    return (
+      <div className="grow bg-[#F2F2F2] flex items-center justify-center text-[#74798C]">
+        Chargement...
+      </div>
+    );
+  }
+
+  if (error || !userData) {
+    return (
+      <div className="grow bg-[#F2F2F2] flex items-center justify-center text-red-500">
+        {error ?? 'Erreur inconnue'}
+      </div>
+    );
+  }
+
+  const { mainData, activity, averageSessions, performance } = userData;
+  const scorePercent = Math.round(mainData.score * 100);
+
+  const stats = [
+    { icon: '/icons/energy.svg', value: `${mainData.calorieCount.toLocaleString('fr-FR')}kCal`, label: 'Calories', bg: '#FBEAEA' },
+    { icon: '/icons/chicken.svg', value: `${mainData.proteinCount}g`, label: 'Proteines', bg: '#E8F0FF' },
+    { icon: '/icons/apple.svg', value: `${mainData.carbohydrateCount}g`, label: 'Glucides', bg: '#FFF3CC' },
+    { icon: '/icons/cheeseburger.svg', value: `${mainData.lipidCount}g`, label: 'Lipides', bg: '#FFE8EA' },
+  ] as const;
+
   return (
     <div className="grow min-h-0 bg-[#F2F2F2] overflow-hidden">
       <div className="flex flex-col h-full px-18 py-16 gap-8">
         <div>
           <h1 className="text-4xl font-bold">
-            Bonjour <span className="text-[#E60000]">Thomas</span>
+            Bonjour <span className="text-[#E60000]">{mainData.firstName}</span>
           </h1>
           <p className="text-[#74798C] mt-2">Félicitation ! Vous avez explosé vos objectifs hier 🎉</p>
         </div>
@@ -109,13 +132,13 @@ export default function HomeComponent({
               barGap={8}
               barCategoryGap="40%"
               responsive
-              data={dataActivity}
+              data={activity}
             >
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#dedede" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#9B9EAC', fontSize: 14 }} />
+              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#9B9EAC', fontSize: 14 }} />
               <YAxis
                 yAxisId="kg"
-                dataKey="kg"
+                dataKey="kilogram"
                 orientation="right"
                 axisLine={false}
                 tickLine={false}
@@ -123,15 +146,15 @@ export default function HomeComponent({
                 domain={[(min: number) => min - 1, (max: number) => max + 1]}
                 tick={{ fill: '#9B9EAC', fontSize: 14 }}
               />
-              <YAxis yAxisId="kcal" dataKey="kcal" hide />
+              <YAxis yAxisId="kcal" dataKey="calories" hide />
               <Tooltip
-                content={CustomTooltip}
+                content={ActivityTooltip}
                 cursor={{ fill: 'rgba(196, 196, 196, 0.5)' }}
                 isAnimationActive={isAnimationActive}
                 defaultIndex={defaultIndex}
               />
-              <Bar yAxisId="kg" dataKey="kg" fill="#282D30" radius={[3, 3, 0, 0]} />
-              <Bar yAxisId="kcal" dataKey="kcal" fill="#E60000" radius={[3, 3, 0, 0]} />
+              <Bar yAxisId="kg" dataKey="kilogram" fill="#282D30" radius={[3, 3, 0, 0]} />
+              <Bar yAxisId="kcal" dataKey="calories" fill="#E60000" radius={[3, 3, 0, 0]} />
             </BarChart>
           </section>
 
@@ -157,11 +180,11 @@ export default function HomeComponent({
               <LineChart
                 className="w-full h-full absolute inset-0"
                 responsive
-                data={dataSessions}
+                data={averageSessions}
                 margin={{ top: 80, right: 0, bottom: 20, left: 0 }}
               >
                 <XAxis
-                  dataKey="name"
+                  dataKey="day"
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
@@ -172,7 +195,7 @@ export default function HomeComponent({
                 />
                 <Line
                   type="monotone"
-                  dataKey="value"
+                  dataKey="sessionLength"
                   stroke="rgba(255,255,255,0.6)"
                   strokeWidth={2}
                   dot={false}
@@ -185,7 +208,7 @@ export default function HomeComponent({
               <RadarChart
                 className="w-full h-full"
                 responsive
-                data={dataPerformance}
+                data={performance}
                 margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
               >
                 <PolarGrid stroke="rgba(255,255,255,0.2)" radialLines={false} />
@@ -209,7 +232,7 @@ export default function HomeComponent({
               <p className="absolute top-4 left-4 font-bold text-sm text-[#20253A] z-10">Score</p>
               <PieChart className="w-full h-full absolute inset-0" responsive>
                 <Pie
-                  data={[{ value: 12, fill: "#E60000" }, { value: 88, fill: "transparent" }]}
+                  data={[{ value: scorePercent, fill: '#E60000' }, { value: 100 - scorePercent, fill: 'transparent' }]}
                   innerRadius="70%"
                   outerRadius="75%"
                   startAngle={210}
@@ -218,10 +241,9 @@ export default function HomeComponent({
                   strokeWidth={0}
                   cornerRadius={10}
                 />
-
               </PieChart>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <p className="text-2xl font-bold text-[#282D30]">12%</p>
+                <p className="text-2xl font-bold text-[#282D30]">{scorePercent}%</p>
                 <p className="text-sm text-[#74798C] text-center leading-tight">de votre<br />objectif</p>
               </div>
             </div>
@@ -229,5 +251,5 @@ export default function HomeComponent({
         </div>
       </div>
     </div>
-  )
+  );
 }
