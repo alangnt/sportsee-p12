@@ -21,9 +21,9 @@ import {
 import { getUserData } from '../services/api';
 import type { UserData } from '../types';
 
-const SessionCursor = ({ points, height }: any) => {
+const SessionCursor = ({ points }: any) => {
   if (!points?.length) return null;
-  return <rect x={points[0].x} y={0} width={9999} height={height} fill="rgba(0,0,0,0.15)" />;
+  return <rect x={points[0].x} y={-9999} width={9999} height={19999} fill="rgba(0,0,0,0.15)" />;
 };
 
 const SessionTooltip = ({ active, payload }: TooltipContentProps) => {
