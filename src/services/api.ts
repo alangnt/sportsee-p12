@@ -1,5 +1,8 @@
 import type { ApiResponse, UserMainDataRaw, UserActivityRaw, UserAverageSessionsRaw, UserPerformanceRaw, UserData } from '../types';
-import { formatUserMainData, formatActivity, formatAverageSessions, formatPerformance } from './dataFormatter';
+import { UserMainData } from '../models/UserMainData';
+import { UserActivity } from '../models/UserActivity';
+import { UserAverageSessions } from '../models/UserAverageSessions';
+import { UserPerformance } from '../models/UserPerformance';
 import { mockUserData } from './mockData';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -19,11 +22,16 @@ export async function getUserData(userId: number): Promise<UserData> {
       fetchJson<ApiResponse<UserPerformanceRaw>>(`${BASE_URL}/user/${userId}/performance`),
     ]);
 
+    const mainData = new UserMainData(mainRes.data);
+    const activity = new UserActivity(activityRes.data);
+    const averageSessions = new UserAverageSessions(sessionsRes.data);
+    const performance = new UserPerformance(performanceRes.data);
+
     return {
-      mainData: formatUserMainData(mainRes.data),
-      activity: formatActivity(activityRes.data),
-      averageSessions: formatAverageSessions(sessionsRes.data),
-      performance: formatPerformance(performanceRes.data),
+      mainData,
+      activity: activity.sessions,
+      averageSessions: averageSessions.sessions,
+      performance: performance.data,
     };
   } catch {
     return { ...mockUserData, mainData: { ...mockUserData.mainData, id: userId } };
