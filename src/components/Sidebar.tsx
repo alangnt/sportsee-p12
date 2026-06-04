@@ -19,7 +19,7 @@ export default function SidebarComponent() {
         </ul>
       </nav>
 
-      <p className="absolute bottom-8 left-1/2 -translate-x-1/2 [writing-mode:vertical-lr] rotate-180 whitespace-nowrap text-xs">Copyright, SportSee 2020</p>
+      <p className="absolute bottom-4 xl:bottom-8 left-1/2 -translate-x-1/2 [writing-mode:vertical-lr] rotate-180 whitespace-nowrap text-xs">Copyright, SportSee 2020</p>
     </aside>
   )
 }

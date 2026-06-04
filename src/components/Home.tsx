@@ -112,7 +112,7 @@ export default function HomeComponent({
 
   return (
     <div className="grow min-h-0 bg-[#F2F2F2] overflow-hidden">
-      <div className="flex flex-col h-full px-18 py-16 gap-8">
+      <div className="flex flex-col h-full px-12 py-10 xl:px-18 xl:py-16 gap-8">
         <div>
           <h1 className="text-4xl font-bold">
             Bonjour <span className="text-[#E60000]">{mainData.firstName}</span>
@@ -181,7 +181,7 @@ export default function HomeComponent({
                 className="w-full h-full absolute inset-0"
                 responsive
                 data={averageSessions}
-                margin={{ top: 80, right: 0, bottom: 20, left: 0 }}
+                margin={{ top: 80, right: 20, bottom: 20, left: 0 }}
               >
                 <XAxis
                   dataKey="day"
