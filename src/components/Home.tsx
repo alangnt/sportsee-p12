@@ -80,7 +80,10 @@ export default function HomeComponent({
     setError(null);
     getUserData(Number(userId))
       .then(setUserData)
-      .catch(() => setError('Impossible de charger les données utilisateur.'))
+      .catch((err) => {
+        console.error('Échec du chargement des données utilisateur :', err);
+        setError('Impossible de charger les données utilisateur.');
+      })
       .finally(() => setLoading(false));
   }, [userId]);
 
