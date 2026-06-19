@@ -7,14 +7,14 @@ export default function SidebarComponent() {
   ];
 
   return (
-    <aside className="flex flex-col items-center justify-center bg-black text-white w-fit p-6 relative">
+    <aside className="flex flex-col items-center justify-center bg-black text-white w-fit p-4 xl:p-6 relative">
       <nav>
-        <ul className="flex flex-col gap-5">
+        <ul className="flex flex-col gap-4 xl:gap-5">
           {tabs.map(tab => (
-            <li 
-              key={tab.value} 
-              className="flex items-center justify-center rounded-md w-16 h-16 bg-white hover:bg-white/90 transition cursor-pointer"
-            ><img src={tab.iconUrl} alt={tab.value} /></li>
+            <li
+              key={tab.value}
+              className="flex items-center justify-center rounded-md w-10 h-10 xl:w-16 xl:h-16 bg-white hover:bg-white/90 transition cursor-pointer"
+            ><img src={tab.iconUrl} alt={tab.value} className="w-1/2 xl:w-auto" /></li>
           ))}
         </ul>
       </nav>

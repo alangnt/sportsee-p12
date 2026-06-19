@@ -19,6 +19,7 @@ import {
   YAxis,
 } from 'recharts';
 import { getUserData } from '../services/api';
+import { DAY_LABELS } from '../models/UserAverageSessions';
 import type { UserData } from '../types';
 
 const SessionCursor = ({ points }: any) => {
@@ -188,6 +189,7 @@ export default function HomeComponent({
               >
                 <XAxis
                   dataKey="day"
+                  tickFormatter={(day: number) => DAY_LABELS[day - 1] ?? String(day)}
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }}
@@ -214,7 +216,7 @@ export default function HomeComponent({
                 data={performance}
                 margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
               >
-                <PolarGrid stroke="rgba(255,255,255,0.2)" radialLines={false} />
+                <PolarGrid stroke="#FFFFFF" radialLines={false} />
                 <PolarAngleAxis
                   dataKey="subject"
                   tick={{ fill: 'white', fontSize: 12 }}

@@ -65,7 +65,7 @@ export interface ActivitySession {
 }
 
 export interface AverageSession {
-  day: string;
+  day: number;
   sessionLength: number;
 }
 
